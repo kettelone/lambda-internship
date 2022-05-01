@@ -1,0 +1,25 @@
+{
+  "name": "correctarium",
+  "version": "1.0.0",
+  "description": "correctarium algorithm",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "js",
+    "jest",
+    "javscript",
+    "react",
+    "nodejs"
+  ],
+  "author": "Bohdan <bkrevsun@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.1.0"
+  },
+  "dependencies": {
+    "moment-timezone": "^0.5.33"
+  }
+}
