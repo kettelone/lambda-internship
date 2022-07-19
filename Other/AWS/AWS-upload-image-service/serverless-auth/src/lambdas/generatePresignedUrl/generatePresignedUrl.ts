@@ -21,7 +21,7 @@ const baseHandler = async (event:EventPresignedUrl):Promise<APIGatewayProxyResul
         Bucket: process.env.imageUploadBucket,
         Key: `${imageKey}`,
         Expires: 60,
-    });
+    }); 
     return {
         statusCode: 200,
         body: JSON.stringify({ url }),
