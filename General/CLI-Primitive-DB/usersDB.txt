@@ -1,2 +1,0 @@
-{"name":"ivan","gender":"male","age":"23"}
-{"name":"irina","gender":"female","age":"45"}
