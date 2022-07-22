@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+dotenv.config()
 import axios from 'axios'
 import { Crypto, ICrypto} from '../models/models.js'
 import {
@@ -8,7 +9,7 @@ import {
 } from './telegram-index.js'
 import {CoinMarketResponse} from '../intrefaces/coinMarketResponse'
 import {IUserResponse} from '../intrefaces/userResponse'
-dotenv.config()
+
 
 const urlCoinmarketcap: string = process.env.URL!
 const coinMarketKey: string = process.env.COIN_MARKET_CAP_KEY!
