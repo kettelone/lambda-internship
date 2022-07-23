@@ -33,6 +33,7 @@ const start = () => {
     .action((path) => {
       try {
         const buffer = fs.readFileSync(path)
+        console.log(buffer)
         bot.sendPhoto(process.env.CHAT_ID, buffer)
       } catch (e) {
         console.log(e)
