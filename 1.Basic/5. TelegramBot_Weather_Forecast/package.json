@@ -1,0 +1,30 @@
+{
+  "name": "telegrambot-weather-forecast",
+  "version": "1.0.0",
+  "description": "Weather Forecast Telegram Bot",
+  "main": "weatherForecast.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "nodejs",
+    "axios",
+    "telegram",
+    "bot",
+    "heroku"
+  ],
+  "author": "BK",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "moment": "^2.29.4",
+    "node-telegram-bot-api": "^0.58.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.20.0",
+    "nodemon": "^2.0.19"
+  }
+}

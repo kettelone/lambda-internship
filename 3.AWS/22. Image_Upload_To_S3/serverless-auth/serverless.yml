@@ -1,0 +1,183 @@
+service: serverless-cognito-auth
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: '20201221'
+  region: eu-west-1
+  environment:
+    userPoolId: { Ref: UserPool }
+    clientId: { Ref: UserClient }
+    imageUploadBucket: ${self:custom.imageUploadBucket}
+    region: ${self:provider.region}
+    MYSQL_HOST: ${self:custom.MYSQL_HOST}
+    MYSQL_PORT: ${self:custom.MYSQL_PORT}
+    MYSQL_DB_NAME: ${self:custom.MYSQL_DB_NAME}
+    MYSQL_USERNAME: ${self:custom.MYSQL_USERNAME}
+    MYSQL_PASSWORD: ${self:custom.MYSQL_PASSWORD}
+    
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminInitiateAuth
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminSetUserPassword
+        - s3:*
+      Resource: "*"
+plugins:
+  - serverless-webpack
+
+package:
+    individually: true
+
+custom:
+    imageUploadBucket: ${env:IMAGE_UPLOAD_BUCKET}
+    MYSQL_DB_IDENTIFIER: ${env:MYSQL_DB_IDENTIFIER}
+    MYSQL_DB_NAME: ${env:MYSQL_DB_NAME}
+    MYSQL_USERNAME: ${env:MYSQL_USERNAME}
+    MYSQL_PASSWORD: ${env:MYSQL_PASSWORD}
+    MYSQL_HOST: 
+      Fn::GetAtt: [MySqlRDSInstance, Endpoint.Address]
+    MYSQL_PORT:
+      Fn::GetAtt: [MySqlRDSInstance, Endpoint.Port]
+      
+
+functions:
+
+  loginUser:
+    handler: dist/lambdas/login/login.handler
+    events:
+      - http:
+          path: user/login
+          method: post
+          cors: true
+
+  signupUser:
+    handler: dist/lambdas/signup/signup.handler
+    events:
+      - http:
+          path: user/signup
+          method: post
+          cors: true
+
+  uploadAPI:
+    handler: dist/lambdas/uploadImage/uploadImage.handler
+    events:
+      - http:
+          path: user/upload-image
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+
+  saveImageToDB:
+    handler: dist/lambdas/saveImageToDB/saveImageToDB.handler
+    events:
+      - s3:
+          bucket: ${self:custom.imageUploadBucket}
+          event: s3:ObjectCreated:*
+          existing: true
+     
+  deleteImage:
+    handler: dist/lambdas/deleteImage/deleteImage.handler
+    events: 
+      - http:
+          path: user/delete-image
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+
+  getImagesList:
+    handler: dist/lambdas/getImagesList/getImagesList.handler
+    events:
+      - http:
+          path: user/get-image-list
+          method: get
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+
+  generatePresignedUrl:
+    handler: dist/lambdas/generatePresignedUrl/generatePresignedUrl.handler
+    events:
+      - http:
+          path: user/generate-presigned-url
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              
+resources:
+  Resources:
+    UserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: serverless-auth-pool
+        Schema:
+          - Name: email
+            Required: true
+            Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+        AutoVerifiedAttributes: ["email"]
+
+    UserClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: user-pool-ui
+        GenerateSecret: false
+        UserPoolId: { Ref: UserPool }
+        AccessTokenValidity: 5
+        IdTokenValidity: 5
+        ExplicitAuthFlows:
+          - "ADMIN_NO_SRP_AUTH"
+       
+    ImageUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageUploadBucket}
+        AccessControl: PublicRead
+
+    MySqlRDSInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceIdentifier: ${self:custom.MYSQL_DB_IDENTIFIER}
+        MasterUsername: ${self:custom.MYSQL_USERNAME}
+        MasterUserPassword: ${self:custom.MYSQL_PASSWORD}
+        AllocatedStorage: 20
+        DBName: ${self:custom.MYSQL_DB_NAME}
+        DBInstanceClass: db.t2.micro
+        Engine: mysql
+        EngineVersion: "8.0.20"
+        PubliclyAccessible: true

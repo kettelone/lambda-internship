@@ -1,0 +1,51 @@
+service: aws-node-http-api-project
+frameworkVersion: '2 || 3'
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+
+package:
+  individually: true
+
+functions:
+  hello:
+    handler: dist/hello.handler
+    events:
+      - httpApi:
+          path: /hello
+          method: get
+  findFirstPositiveSLS:
+    handler: dist/findFirstPositiveSLS.handler
+    events:
+      - httpApi:
+          path: /find-positive
+          method: post
+  findSumOfPositiveSLS:
+    handler: dist/findSumOfPositiveSLS.handler
+    events:
+      - httpApi:
+          path: /calculate-sum
+          method: post
+  findSumAndProductSLS:
+    handler: dist/findSumAndProductSLS.handler
+    events:
+      - httpApi:
+          path: /find-sum-and-product
+          method: post
+  findIndexOfDateSLS:
+    handler: dist/findIndexOfDateSLS.handler
+    events:
+      - httpApi:
+          path: /find-index
+          method: get
+  sortUserInputSLS:
+    handler: dist/sortUserInputSLS.handler
+    events:
+      - httpApi:
+          path: /sort-input
+          method: post

@@ -1,0 +1,14 @@
+***https://scented-plume-8b2.notion.site/Image-Api-7834bdff95184c1f84ba4a8bbbbdf759
+
+
+Привет. Отчет по заданию. Собрал все вместе. Весь функционал работает(засайниниться, загрузить картинку, удалить картинку, получить список всех своих картинок (с ссылками на них).)
+
+Осталось сделать:
+1. Имплементировать  Мiddy(сделал без него).
+2.Настроить автоверификацию
+3.Переписать на TypeScript.
+
+
+https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_s3_presigned_post.html
+https://github.com/middyjs/middy
+https://www.npmjs.com/package/serverless-bundle
