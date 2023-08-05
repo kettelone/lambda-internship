@@ -8,11 +8,11 @@ class AuthRepository implements authRepositoryInterface {
     password: string
   ): Promise<
     {
+      name: string | null;
+      id: string;
+      phoneNumber: string | null;
       email: string;
       password: string;
-      name: string | null;
-      id: string | null;
-      phoneNumber: string | null;
       isSubscribed: boolean | null;
       freeQuestions: number | null;
     }[]

@@ -1,18 +1,19 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "f096ec1e-e889-4e17-b834-265feb2ebf26",
+  "id": "39b2aa7e-20f0-48e7-9434-9e6e7a0824bb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bankCards": {
       "name": "bankCards",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "card_number": {
           "name": "card_number",
@@ -34,22 +35,22 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "bankCards_user_id_users_id_fk": {
-          "name": "bankCards_user_id_users_id_fk",
+        "bankCards_user_id_users_uuid_fk": {
+          "name": "bankCards_user_id_users_uuid_fk",
           "tableFrom": "bankCards",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
           "columnsTo": [
-            "id"
+            "uuid"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -62,11 +63,12 @@
       "name": "questionsAnswers",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "question": {
           "name": "question",
@@ -88,22 +90,22 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "questionsAnswers_user_id_users_id_fk": {
-          "name": "questionsAnswers_user_id_users_id_fk",
+        "questionsAnswers_user_id_users_uuid_fk": {
+          "name": "questionsAnswers_user_id_users_uuid_fk",
           "tableFrom": "questionsAnswers",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
           "columnsTo": [
-            "id"
+            "uuid"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -116,11 +118,12 @@
       "name": "users",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "phone_number": {
           "name": "phone_number",
@@ -132,13 +135,13 @@
           "name": "email",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "password": {
           "name": "password",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -150,14 +153,15 @@
           "name": "is_subscribed",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": false
         },
         "free_questions": {
           "name": "free_questions",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "default": 0
+          "default": 5
         }
       },
       "indexes": {},

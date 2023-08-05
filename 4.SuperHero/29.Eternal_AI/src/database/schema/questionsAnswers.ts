@@ -1,11 +1,11 @@
-import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 import { users } from './users';
 
 export const questionsAnswers = pgTable('questionsAnswers', {
-  id: serial('id').primaryKey(),
+  id: uuid('uuid').defaultRandom().notNull(),
   question: text('question'),
   answer: text('answer'),
   timestamp: timestamp('timestamp', { precision: 6, withTimezone: true }),
-  userId: integer('user_id').references(() => users.id)
+  userId: uuid('user_id').references(() => users.id)
 });
