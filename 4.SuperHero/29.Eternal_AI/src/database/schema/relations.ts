@@ -4,10 +4,10 @@ import { bankcards } from './bankCards';
 import { questionsAnswers } from './questionsAnswers';
 import { users } from './users';
 
-export const usersRelations = relations(users, ({ one }) => ({
-  bankcards: one(bankcards, {
-    fields: [users.id],
-    references: [bankcards.userId]
+export const cardRelations = relations(bankcards, ({ one }) => ({
+  users: one(users, {
+    fields: [bankcards.userId],
+    references: [users.id]
   })
 }));
 

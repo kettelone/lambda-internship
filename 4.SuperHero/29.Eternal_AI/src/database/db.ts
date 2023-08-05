@@ -15,12 +15,12 @@ const db = drizzle(client);
 const connectDB = async () => {
   await client.connect();
 };
-const runMigrations = async () => {
-  await migrate(db, {
-    migrationsFolder: 'src/database/migrations'
-  });
-};
+// const runMigrations = async () => {
+//   await migrate(db, {
+//     migrationsFolder: 'src/database/migrations'
+//   });
+// };
 
 connectDB();
-runMigrations();
+// runMigrations();
 export default db;

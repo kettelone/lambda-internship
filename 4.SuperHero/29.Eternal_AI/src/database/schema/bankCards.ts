@@ -4,7 +4,7 @@ import { integer, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const bankcards = pgTable('bankCards', {
-  id: uuid('uuid').defaultRandom().notNull(),
+  id: uuid('uuid').primaryKey().defaultRandom(),
   cardNumber: integer('card_number'),
   expiryDate: varchar('expiry_date', { length: 5 }),
   cvc: integer('cvc'),

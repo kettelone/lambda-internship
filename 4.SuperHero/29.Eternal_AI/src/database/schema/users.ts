@@ -2,7 +2,7 @@ import { InferModel } from 'drizzle-orm';
 import { boolean, integer, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
-  id: uuid('uuid').defaultRandom().notNull(),
+  id: uuid('uuid').primaryKey().defaultRandom(),
   phoneNumber: varchar('phone_number', { length: 256 }),
   email: varchar('email', { length: 256 }).notNull(),
   password: varchar('password', { length: 256 }).notNull(),
