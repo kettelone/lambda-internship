@@ -3,13 +3,21 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
 
+//Production DB connection
+
 const client = new Client({
-  host: process.env.DB_HOST,
-  port: 5432,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  connectionString: process.env.DB_CONNECTION_STRING
 });
+
+//Dev DB connection
+
+// const client = new Client({
+//   host: process.env.DB_HOST,
+//   port: +process.env.PORT!,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_NAME
+// });
 
 const db = drizzle(client);
 const connectDB = async () => {
