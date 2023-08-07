@@ -1,6 +1,6 @@
-// import 'dotenv/config';
+import 'dotenv/config';
 // import { drizzle } from 'drizzle-orm/node-postgres';
-// // import { migrate } from 'drizzle-orm/node-postgres/migrator';
+// import { migrate } from 'drizzle-orm/node-postgres/migrator';
 // import { Client } from 'pg';
 
 // const client = new Client({
@@ -23,10 +23,15 @@
 
 import { neon, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
+import { migrate } from 'drizzle-orm/neon-http/migrator';
 
 neonConfig.fetchConnectionCache = true;
 
 const sql = neon(process.env.DB_CONNECTION_STRING!);
 const db = drizzle(sql);
+const runMigration = async () => {
+  await migrate(db, { migrationsFolder: './drizzle' });
+};
+runMigration();
 
 export default db;
