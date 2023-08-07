@@ -12,6 +12,7 @@ class AuthController {
       await authRepository.signUpUser(email, hash);
       res.json("User is successfully registered"); 
     } catch (e: any) {
+      console.log({e})
       if (e.code === "23505") {
         next(DBError.userExist())
       } else {

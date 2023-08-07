@@ -1,15 +1,7 @@
-import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { Client } from 'pg';
-
-//Production DB connection
-
-const client = new Client({
-  connectionString: process.env.DB_CONNECTION_STRING
-});
-
-//Dev DB connection
+// import 'dotenv/config';
+// import { drizzle } from 'drizzle-orm/node-postgres';
+// // import { migrate } from 'drizzle-orm/node-postgres/migrator';
+// import { Client } from 'pg';
 
 // const client = new Client({
 //   host: process.env.DB_HOST,
@@ -19,16 +11,22 @@ const client = new Client({
 //   database: process.env.DB_NAME
 // });
 
-const db = drizzle(client);
-const connectDB = async () => {
-  await client.connect();
-};
-// const runMigrations = async () => {
-//   await migrate(db, {
-//     migrationsFolder: 'src/database/migrations'
-//   });
+// const db = drizzle(client);
+// const connectDB = async () => {
+//   await client.connect();
 // };
 
-connectDB();
-// runMigrations();
+// connectDB();
+// export default db;
+
+/*NEON*/
+
+import { neon, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+
+neonConfig.fetchConnectionCache = true;
+
+const sql = neon(process.env.DB_CONNECTION_STRING!);
+const db = drizzle(sql);
+
 export default db;

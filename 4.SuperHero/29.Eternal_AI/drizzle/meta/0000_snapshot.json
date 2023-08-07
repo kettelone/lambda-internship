@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "5e7a9c6c-cf91-4d36-8262-36d0b2fcbf0b",
+  "id": "61999179-0652-43f2-a7d1-bbaf7bad1812",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bankCards": {
