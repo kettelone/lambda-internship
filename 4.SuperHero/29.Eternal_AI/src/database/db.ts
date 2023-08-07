@@ -21,10 +21,8 @@ import 'dotenv/config';
 
 /*NEON*/
 
-import { neon, neonConfig } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-
-neonConfig.fetchConnectionCache = true;
 
 const sql = neon(process.env.DB_CONNECTION_STRING!);
 const db = drizzle(sql);
