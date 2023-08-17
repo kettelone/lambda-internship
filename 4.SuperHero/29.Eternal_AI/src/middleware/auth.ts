@@ -1,5 +1,17 @@
-import passport, { DoneCallback, Profile } from 'passport';
+import { sql } from 'drizzle-orm';
+import { Request } from 'express';
+import passport, { DoneCallback } from 'passport';
 
+import db from '../database/db';
+import { users } from '../database/schema/users';
+
+interface Profile {
+  emails: {
+    value: string;
+    verified: true;
+  }[];
+  id: string;
+}
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(
@@ -7,25 +19,27 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      passReqToCallback: true
     },
-    function (
+    async function (
+      request: Request,
       accessToken: string,
       refreshToken: string,
       profile: Profile,
       done: DoneCallback
     ) {
-      //TO DO, retrieve the user or create the new one
-      console.log({ profile });
+      const googleAccountEmail = profile.emails[0].value;
+      const user = await db
+        .select()
+        .from(users)
+        .where(sql`${users.email} = ${googleAccountEmail}`);
+      if (user.length === 0) {
+        await db
+          .insert(users)
+          .values({ email: googleAccountEmail, googleId: profile.id });
+      }
       return done(null, profile);
     }
   )
 );
-
-passport.serializeUser((user: Express.User, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user: Express.User, done) => {
-  done(null, user);
-});

@@ -1,4 +1,11 @@
 import 'dotenv/config';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+
+import * as schema1 from './schema/bankCards';
+import * as schema2 from './schema/questionsAnswers';
+import * as schema4 from './schema/relations';
+import * as schema3 from './schema/users';
 
 // import { drizzle } from 'drizzle-orm/node-postgres';
 // import { migrate } from 'drizzle-orm/node-postgres/migrator';
@@ -22,15 +29,15 @@ import 'dotenv/config';
 
 /*NEON*/
 
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
-import { migrate } from 'drizzle-orm/neon-http/migrator';
+// import { migrate } from 'drizzle-orm/neon-http/migrator';
 
 const sql = neon(process.env.DB_CONNECTION_STRING!);
-const db = drizzle(sql);
+const db = drizzle(sql, {
+  schema: { ...schema1, ...schema2, ...schema3, ...schema4 }
+});
 
-const runMigration = async (): Promise<void> => {
-  await migrate(db, { migrationsFolder: './drizzle' });
-};
-export { runMigration };
+// const runMigration = async (): Promise<void> => {
+//   await migrate(db, { migrationsFolder: './drizzle' });
+// };
+// export { runMigration };
 export default db;

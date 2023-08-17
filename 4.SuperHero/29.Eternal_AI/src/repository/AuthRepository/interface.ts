@@ -1,5 +1,5 @@
-import { User } from '../../database/schema/users';
+import { NewUser } from '../../database/schema/users';
 
 export interface authRepositoryInterface {
-  signUpUser(email: string, password: string): Promise<User[]>;
+  signUpUser(email: string, password: string): Promise<NewUser[]>;
 }
