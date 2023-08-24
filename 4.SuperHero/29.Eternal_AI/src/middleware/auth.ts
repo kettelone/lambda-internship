@@ -1,9 +1,7 @@
-import { sql } from 'drizzle-orm';
 import { Request } from 'express';
 import passport, { DoneCallback } from 'passport';
 
-import db from '../database/db';
-import { users } from '../database/schema/users';
+import authRepository from '../repository/AuthRepository/authRepository';
 
 interface Profile {
   emails: {
@@ -30,14 +28,12 @@ passport.use(
       done: DoneCallback
     ) {
       const googleAccountEmail = profile.emails[0].value;
-      const user = await db
-        .select()
-        .from(users)
-        .where(sql`${users.email} = ${googleAccountEmail}`);
-      if (user.length === 0) {
-        await db
-          .insert(users)
-          .values({ email: googleAccountEmail, googleId: profile.id });
+      if (!googleAccountEmail) {
+        return;
+      }
+      const user = await authRepository.getUser(googleAccountEmail);
+      if (!user) {
+        await authRepository.signUpGoogle(googleAccountEmail, profile.id);
       }
       return done(null, profile);
     }

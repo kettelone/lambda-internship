@@ -2,8 +2,6 @@ import express, { Request } from 'express';
 const router = express.Router();
 import passport = require('passport');
 
-// eslint-disable-next-line import/order
-import generateAccessToken from '../utils/generateJWT';
 require('../middleware/auth.ts');
 
 interface GoogleCallbackRequest extends Request {
@@ -17,6 +15,9 @@ interface GoogleCallbackRequest extends Request {
 import authController from '../controller/authController';
 import checkValidationErrors from '../middleware/validationResults';
 import validator from '../middleware/validator';
+import authRepository from '../repository/AuthRepository/authRepository';
+import generateAccessToken from '../utils/generateJWT';
+
 router.post(
   '/sign-up',
   validator.checkSignUpUser(),
@@ -35,26 +36,30 @@ router.get(
     session: false,
     failureRedirect: process.env.FAILURE_REDIRECT
   }),
-  function (req: GoogleCallbackRequest, res) {
+  async function (req: GoogleCallbackRequest, res) {
     if (!req.user) {
       return;
     }
-    const { id, displayName, emails } = req.user;
+    const { emails } = req.user;
     if (!emails) {
       return;
     }
-    const token = generateAccessToken({
-      googleId: id,
-      displayName,
-      email: emails[0].value
-    });
-    res.json(token);
-    // res.redirect(`${baseFrontendUrl}/OAuthRedirecting?token=${token}`);
+
+    const user = await authRepository.getUser(emails[0].value);
+    const jwt = generateAccessToken({ email: emails[0].value });
+    res.cookie('jwt', jwt);
+    res.cookie('user', user);
+    res.redirect(`${process.env.SUCCESS_REDIRECT}`);
   }
 );
 
 router.get('/failure', (req, res) => {
   res.send('Failure google auth');
 });
+
+router.post('/login', authController.login);
+
+//for testing purposes
+router.delete('/delete-users', authController.deleteUsers);
 
 export default router;
