@@ -8,5 +8,8 @@
   ],
     "editor.codeActionsOnSave": {
     "source.fixAll": true
-  }
+  },
+  "cSpell.words": [
+    "openai"
+  ]
 }
