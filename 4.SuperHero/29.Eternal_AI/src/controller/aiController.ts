@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
 import aiService from '../service/aiService';
-
+import INDIVIDUALS from '../utils/individuals';
 interface UserRequest extends Request {
   query: {
-    message: string;
+    question: string;
+    characterID: string;
   };
 }
 
@@ -15,8 +16,11 @@ class AIController {
     next: NextFunction
   ) {
     try {
-      const { message } = req.query;
-      const answer = await aiService.getAIAnswer(message);
+      const { question, characterID } = req.query;
+      const answer = await aiService.getAIAnswer(
+        question,
+        Number(characterID) as keyof typeof INDIVIDUALS
+      );
       res.json(answer);
     } catch (e) {
       console.log(e);
