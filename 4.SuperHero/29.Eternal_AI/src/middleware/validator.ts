@@ -15,6 +15,8 @@ class Validator {
         .withMessage('The password value should be at least 8 characters long')
     ];
   }
+
+  checkLoginUser() {}
 }
 
 export default new Validator();

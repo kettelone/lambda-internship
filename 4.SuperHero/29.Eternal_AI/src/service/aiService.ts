@@ -10,8 +10,8 @@ class AIService {
       messages: [
         {
           role: 'system',
-          content: `How would ${INDIVIDUALS[characterID]} answer the following question?
-        "${question}?"`
+          content: `On behalf of ${INDIVIDUALS[characterID]} answer the following question:
+        "${question}?".Make the answer maximum one paragraph long. The answer must be in the form of direct speech.`
         }
       ],
       model: 'gpt-3.5-turbo'
