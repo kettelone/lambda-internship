@@ -1,11 +1,16 @@
 // This code is for v4 of the openai package: npmjs.com/package/openai
 import OpenAI from 'openai';
 
+import aiRepository from '../repository/AIRepository/aiRepository';
 const openai = new OpenAI();
 import INDIVIDUALS from '../utils/individuals';
 
 class AIService {
-  async getAIAnswer(question: string, characterID: keyof typeof INDIVIDUALS) {
+  async getAIAnswer(
+    question: string,
+    characterID: keyof typeof INDIVIDUALS,
+    userId: string
+  ) {
     const completion = await openai.chat.completions.create({
       messages: [
         {
@@ -16,7 +21,11 @@ class AIService {
       ],
       model: 'gpt-3.5-turbo'
     });
-    return completion.choices[0].message.content;
+    const answer = completion.choices[0].message.content;
+    if (answer) {
+      await aiRepository.saveConversation(question, answer, userId);
+    }
+    return answer;
   }
 }
 

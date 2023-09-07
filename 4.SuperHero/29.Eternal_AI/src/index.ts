@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Express } from 'express';
 import passport from 'passport';
-require('./middleware/auth');
+require('./middleware/googleAuth');
 
 import errorHandler from './middleware/errorHandling';
 import router from './routes/index';

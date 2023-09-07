@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 
-import AuthError from '../errors/authErrors';
+import CustomErrors from '../errors/customErrors';
 import authRepository from '../repository/AuthRepository/authRepository';
 import generateAccessToken from '../utils/generateJWT';
 
@@ -11,7 +11,7 @@ class AuthController {
       const { email, password } = req.body as { [key: string]: string };
       const hash = await bcrypt.hash(password, 5);
       const newUser = await authRepository.signUpUser(email, hash);
-      const jwt = generateAccessToken({ email });
+      const jwt = generateAccessToken({ id: newUser.id });
       res.status(201).send({
         jwt,
         user: newUser,
@@ -19,9 +19,9 @@ class AuthController {
       });
     } catch (e: any) {
       if (e.code === '23505') {
-        next(AuthError.userExist());
+        next(CustomErrors.userExist());
       } else {
-        next(AuthError.internal());
+        next(CustomErrors.internal());
       }
     }
   }
@@ -31,26 +31,33 @@ class AuthController {
       const { email, password } = req.body as { [key: string]: string };
       const user = await authRepository.getUser(email);
       if (!user) {
-        next(AuthError.userNotExist());
+        next(CustomErrors.userNotExist());
         return;
       }
       if (!user.password) {
-        next(AuthError.loginWithGoogle());
+        next(CustomErrors.loginWithGoogle());
         return;
       }
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
-        next(AuthError.invalidPassword());
+        next(CustomErrors.invalidPassword());
         return;
       }
-      const jwt = generateAccessToken({ email });
+      const jwt = generateAccessToken({ id: user.id });
       res.status(201).send({
         jwt,
-        user: user,
+        user: {
+          id: user.id,
+          name: user.name,
+          phoneNumber: user.phoneNumber,
+          email: user.email,
+          isSubscribed: user.isSubscribed,
+          freeQuestions: user.freeQuestions
+        },
         message: 'User is successfully logged in'
       });
     } catch (e) {
-      next(AuthError.internal());
+      next(CustomErrors.internal());
     }
   }
 

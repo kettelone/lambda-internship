@@ -6,6 +6,9 @@ export const questionsAnswers = pgTable('questionsAnswers', {
   id: uuid('uuid').primaryKey().defaultRandom(),
   question: text('question'),
   answer: text('answer'),
-  timestamp: timestamp('timestamp', { precision: 6, withTimezone: true }),
+  timestamp: timestamp('timestamp', {
+    precision: 6,
+    withTimezone: true
+  }).defaultNow(),
   userId: uuid('user_id').references(() => users.id)
 });

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import DBError from '../errors/authErrors';
+import CustomErrors from '../errors/customErrors';
 
 function errorHandler(
   err: Error,
@@ -8,7 +8,7 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  if (err instanceof DBError) {
+  if (err instanceof CustomErrors) {
     res.status(err.code).json({
       status: err.code,
       name: err.name,

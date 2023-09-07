@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
+import Errors from '../errors/customErrors';
 import aiService from '../service/aiService';
 import INDIVIDUALS from '../utils/individuals';
 interface UserRequest extends Request {
   query: {
     question: string;
     characterID: string;
+    userId: string;
   };
 }
 
@@ -16,14 +18,18 @@ class AIController {
     next: NextFunction
   ) {
     try {
-      const { question, characterID } = req.query;
+      const { question, characterID, userId } = req.query;
       const answer = await aiService.getAIAnswer(
         question,
-        Number(characterID) as keyof typeof INDIVIDUALS
+        Number(characterID) as keyof typeof INDIVIDUALS,
+        userId
       );
+      if (!answer) {
+        next(Errors.internal());
+      }
       res.json(answer);
     } catch (e) {
-      console.log(e);
+      next(Errors.internal());
     }
   }
 }
